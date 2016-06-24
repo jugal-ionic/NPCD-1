@@ -1,0 +1,36 @@
+/*********************
+
+Authors:
+	Luis Rodrigues
+
+Stylesheet:
+	Variables stylesheet
+
+*********************/
+
+/*Colours*/
+$colourText: #222222;
+$colourTextNeg: #ffffff;
+$colourTextNeutral: #b3b3b3;
+$gray: #696969;
+$orange: #ffa037;
+$orange-dark: #db5931;
+$green: #57aa9b;
+$green-dark: #0a5f55;
+$blue: #014b96;
+$blue-dark: #11314d;
+$twitter: #5ea9dd;
+$twitter-dark: #2d6286;
+
+/*Fonts families*/
+$fontArial: "Arial", "Helvetica", sans-serif;
+$fontTimes: "Times", "Times New Roman", serif;
+$fontCubano: "cubano_for_malibu_fillingRg", "Helvetica", sans-serif;
+
+/*Screen width breakpoints*/
+$breakpoints: (
+	(mobile	480px)
+    (tablet 640px)
+    (desktop 960px)
+    (extended 1440px)
+)
