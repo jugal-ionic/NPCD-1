@@ -1,0 +1,13 @@
+/*-- Typo mixins --*/
+@mixin geox-regular() {
+	font-family: 'geoxe3regular', Helvetica, Arial;
+}
+
+@mixin geox-bold() {
+	font-family: 'geoxe3regular', Helvetica, Arial;
+	font-weight: bold;
+}
+
+@mixin signpainter() {
+	font-family: 'SignPainter-HouseShowcard', Verdana;
+}
