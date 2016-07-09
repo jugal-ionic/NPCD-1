@@ -106,9 +106,9 @@ function App() {
 
 function welcomeNewUser() {
 
-	if (window.location.host !== 'www.pinacoladaday.co.uk') {
-		return;
-	}
+	//if (window.location.host !== 'www.pinacoladaday.co.uk') {
+	//	return;
+	//}
 
 	var formData = getUserCrmData();
 
@@ -155,11 +155,11 @@ function welcomeNewUser() {
 
 	}
 
-	// var emailTriggerRequest = new XMLHttpRequest();
-	// emailTriggerRequest.onreadystatechange = emailTriggerResponse;
-	// emailTriggerRequest.open('POST', '/welcome-user', true);
-	// emailTriggerRequest.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
-	// emailTriggerRequest.send(formData);
+	 var emailTriggerRequest = new XMLHttpRequest();
+	 //emailTriggerRequest.onreadystatechange = emailTriggerResponse;
+	 emailTriggerRequest.open('POST', '/subscribe-exactTarget', true);
+	 emailTriggerRequest.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
+	 emailTriggerRequest.send(formData);
 
 }
 
@@ -210,7 +210,7 @@ function signUpNewsletter() {
 			response = JSON.parse(target.responseText);
 
 			if (response.success) {
-				//console.log(response);
+				console.log(response);
 			} else {
 				console.error(response);
 			}
@@ -228,7 +228,6 @@ function signUpNewsletter() {
 	newsletterRequest.send(formData);
 
 }
-
 
 // Listen for orientation changes
 window.addEventListener("orientationchange", function() {

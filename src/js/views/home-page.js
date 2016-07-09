@@ -11,7 +11,8 @@ Description:
 function HomePageScreen() {
 
 	var self = this,
-		startDate = new Date(2016, 6, 8, 0, 0, 0, 0),
+	//var d = new Date(year, month, day, hours, minutes, seconds, milliseconds);
+		startDate = new Date(2016, 6, 8, 12, 0, 0, 0),
 		now = new Date(),
 		voucherCTA,
 		checkDate;
@@ -44,7 +45,7 @@ function HomePageScreen() {
 			// self.scrManager.addScreen(VoucherPageScreen);
 			var errorWrapper = document.getElementById('error-overlay'),
 				errorMessage = document.getElementById('dateErrorMessage'),
-				voucherError = 'You’re keen! It’s not quite time to enjoy a Piña Colada just yet though, you’ll have to wait until the 8th, 9th and 10th of July.';
+				voucherError = 'You’re keen! It’s not quite time to enjoy a Piña Colada just yet though, you’ll have to wait until midday on the 8th, 9th and 10th of July.';
 
 			errorMessage.textContent = voucherError;
 			errorWrapper.style.display = 'block';
