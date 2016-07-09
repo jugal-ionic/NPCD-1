@@ -21991,7 +21991,8 @@ Description:
 
 *********************/
 function HomePageScreen() {
-    var self = this, startDate = new Date(2016, 6, 8, 0, 0, 0, 0), now = new Date(), voucherCTA, checkDate;
+    var self = this, //var d = new Date(year, month, day, hours, minutes, seconds, milliseconds);
+    startDate = new Date(2016, 6, 8, 12, 0, 0, 0), now = new Date(), voucherCTA, checkDate;
     Screen.apply(this, Array.prototype.slice.call(arguments));
     this.id = "home-page-screen";
     this.name = "Home page";
@@ -22008,7 +22009,7 @@ function HomePageScreen() {
             self.scrManager.addScreen(VoucherPageScreen);
         } else {
             // self.scrManager.addScreen(VoucherPageScreen);
-            var errorWrapper = document.getElementById("error-overlay"), errorMessage = document.getElementById("dateErrorMessage"), voucherError = "You’re keen! It’s not quite time to enjoy a Piña Colada just yet though, you’ll have to wait until the 8th, 9th and 10th of July.";
+            var errorWrapper = document.getElementById("error-overlay"), errorMessage = document.getElementById("dateErrorMessage"), voucherError = "You’re keen! It’s not quite time to enjoy a Piña Colada just yet though, you’ll have to wait until midday on the 8th, 9th and 10th of July.";
             errorMessage.textContent = voucherError;
             errorWrapper.style.display = "block";
         }
@@ -22098,8 +22099,8 @@ Description:
 
 *********************/
 function MapPageScreen() {
-    var self = this, listWrap, barList, map, geoCoder, minZoomLevel = 6, mapBounds = new google.maps.LatLngBounds(new google.maps.LatLng(49.378087, (-8.906589)), new google.maps.LatLng(61.039487, 2.730992)), barBounds, userLocation, mapCenterLocation, mapMarkers = [], barListItemTemplate = "", listedBars = [], activeBar, directionsService, directionsDisplay, errorMessage = document.getElementById("dateErrorMessage"), errorWrapper = document.getElementById("error-overlay"), isReceivingData = false, userSearch = "";
-    barListItemTemplate += '<h2 class="bar-name">{{ name }}</h2>';
+    var self = this, listWrap, barList, map, geoCoder, minZoomLevel = 6, mapBounds = new google.maps.LatLngBounds(new google.maps.LatLng(49.378087, (-8.906589)), new google.maps.LatLng(56.039487, 2.730992)), barBounds, userLocation, mapCenterLocation, mapMarkers = [], barListItemTemplate = "", listedBars = [], activeBar, directionsService, directionsDisplay, errorMessage = document.getElementById("dateErrorMessage"), errorWrapper = document.getElementById("error-overlay"), isReceivingData = false, userSearch = "";
+    barListItemTemplate += '<h2 class="bar-name" data-bar="{{ index }}">{{ name }}</h2>';
     barListItemTemplate += "{{#directionsEnabled}}";
     barListItemTemplate += '<div class="bar-more-info">';
     barListItemTemplate += '<span class="distance">{{ distance }}</span>';
@@ -22107,7 +22108,7 @@ function MapPageScreen() {
     barListItemTemplate += "</div>";
     barListItemTemplate += "{{/directionsEnabled}}";
     barListItemTemplate += "<address>{{ address }}</address>";
-    barListItemTemplate += '<p class="phoneNumber">Tel. <a href="tel:{{ phoneClean }}" title="Call the bar!">{{ phone }}</a></p>';
+    barListItemTemplate += '<p class="phoneNumber" >{{ phoneLabel }} <a href="tel:{{ phoneClean }}" title="Call the bar!">{{ phone }}</a></p>';
     barListItemTemplate += '<div class="clearfix"></div>';
     barListItemTemplate += '<div class="dots-border"></div>';
     Screen.apply(this, Array.prototype.slice.call(arguments));
@@ -22204,14 +22205,6 @@ function MapPageScreen() {
             }
         });
     }
-    function triggerBar(e, barData) {
-        e.preventDefault();
-        if (isReceivingData) {
-            return;
-        }
-        isReceivingData = true;
-        addBarMarker2(barData);
-    }
     function showBarDetails(barData) {
         if (!barData) {
             ga("send", "event", "Find a bar", "Search", "select bar");
@@ -22226,10 +22219,9 @@ function MapPageScreen() {
         }
         barInfoOverlay.style.display = "block";
         nameField.textContent = barData.name1 + (barData.name2 ? " " + barData.name2 : "");
-        //nameField.addEventListener("click", TriggerBar(barData));
         addressField.textContent = barData.address1 + (barData.address2 ? "\n" + barData.address2 : "") + (barData.address3 ? "\n" + barData.address3 : "") + (barData.address4 ? "\n" + barData.address4 : "");
         barPostcode.textContent = barData.postcode;
-        distance.textContent = "";
+        distance.textContent = "goto";
         // distanceToBar ? distanceToBar : '';
         if (barData.phone) {
             phoneNumField.innerHTML = barData.phone;
@@ -22253,8 +22245,7 @@ function MapPageScreen() {
         mapMarkers.push(barMarker);
         barBounds.extend(barCoordinates);
     }
-    function addBarMarker2(barData) {
-        barData = barData.attributes;
+    function addBarMarkerNonSelected(barData) {
         var barCoordinates = new google.maps.LatLng(barData.latitude, barData.longitude), barMarker = new google.maps.Marker({
             position: barCoordinates,
             map: map,
@@ -22262,9 +22253,40 @@ function MapPageScreen() {
             title: barData.name1 + (barData.name2 ? " " + barData.name2 : "")
         });
         barMarker.set("barData", barData);
-        //google.maps.event.addListener(barMarker, 'click', showBarDetails);
+        google.maps.event.addListener(barMarker, "click", showBarDetails);
         mapMarkers.push(barMarker);
         barBounds.extend(barCoordinates);
+    }
+    function addBarMarkerSelected(barData) {
+        var barCoordinates = new google.maps.LatLng(barData.latitude, barData.longitude), barMarker = new google.maps.Marker({
+            position: barCoordinates,
+            map: map,
+            icon: "assets/img/pin-user.png",
+            title: barData.name1 + (barData.name2 ? " " + barData.name2 : "")
+        });
+        barMarker.set("barData", barData);
+        google.maps.event.addListener(barMarker, "click", showBarDetails);
+        mapMarkers.push(barMarker);
+        barBounds.extend(barCoordinates);
+    }
+    function addOneBarMarker(barData) {
+        //var tmp=mapMarkers;
+        //removeBarPins();
+        _.each(mapMarkers, function(item) {
+            if (item.barData.num_id == barData.num_id) {
+                item.setMap(null);
+                addBarMarkerSelected(item.barData);
+            } else {
+                if (item.barData.latitude !== undefined) {
+                    item.setMap(null);
+                    addBarMarkerNonSelected(item.barData);
+                }
+            }
+        });
+        var barCoordinates = new google.maps.LatLng(barData.latitude, barData.longitude);
+        barBounds.extend(barCoordinates);
+        map.setCenter(barCoordinates);
+        map.setZoom(14);
     }
     function renderBarListItem(barData, index) {
         barData = barData.attributes;
@@ -22278,24 +22300,7 @@ function MapPageScreen() {
             distance: distanceToBar,
             address: barData.address1 + (barData.address2 ? "\n" + barData.address2 : "") + (barData.address3 ? "\n" + barData.address3 : "") + (barData.address4 ? "\n" + barData.address4 : "") + (barData.postcode ? "\n" + barData.postcode : ""),
             phone: barData.phone,
-            phoneClean: barData.phone ? barData.phone.replace(/ /g, "") : false,
-            directionsEnabled: !distanceToBar || self.screenData.standalone ? false : true,
-            index: index
-        };
-        return Mustache.render(barListItemTemplate, barItemData);
-    }
-    function renderBarListItem2(barData, index) {
-        barData = barData.attributes;
-        var template, barItemData, distanceOrigin = userLocation || mapCenterLocation || false, distanceToBar;
-        if (distanceOrigin) {
-            distanceToBar = google.maps.geometry.spherical.computeDistanceBetween(new google.maps.LatLng(barData.latitude, barData.longitude), distanceOrigin);
-            distanceToBar = (distanceToBar * .000621371192).toFixed(2) + " miles";
-        }
-        barItemData = {
-            name: barData.name1 + (barData.name2 ? " " + barData.name2 : ""),
-            distance: distanceToBar,
-            address: barData.address1 + (barData.address2 ? "\n" + barData.address2 : "") + (barData.address3 ? "\n" + barData.address3 : "") + (barData.address4 ? "\n" + barData.address4 : "") + (barData.postcode ? "\n" + barData.postcode : ""),
-            phone: barData.phone,
+            phoneLabel: barData.phone ? "Tel." : "",
             phoneClean: barData.phone ? barData.phone.replace(/ /g, "") : false,
             directionsEnabled: !distanceToBar || self.screenData.standalone ? false : true,
             index: index
@@ -22309,7 +22314,7 @@ function MapPageScreen() {
         }
     }
     function populateBars(barData) {
-        console.log(barData.length);
+        //console.log(barData.length);
         if (barData.length > 0) {
             var i, output = "";
             listedBars = barData;
@@ -22334,7 +22339,7 @@ function MapPageScreen() {
             showNoResults();
         }
     }
-    function getNearestToMapCenter() {
+    function getAllNearestToMapCenter() {
         if (!mapCenterLocation) {
             return;
         }
@@ -22344,23 +22349,22 @@ function MapPageScreen() {
         // 	return removeBarPins();
         // }
         isReceivingData = true;
-        var BarsList = Parse.Object.extend("Bars"), query = new Parse.Query(BarsList);
-        //,parseGeopoint = new Parse.GeoPoint(51.50618, -0.12978);//london
+        var BarsList = Parse.Object.extend("Bars"), query = new Parse.Query(BarsList), parseGeopoint = new Parse.GeoPoint(51.50618, (-.12978));
+        //london
         // if (!self.screenData.standalone) {
         // 	query.limit(25);
         // } else {
         // 	query.limit(1000);
         // }
         query.limit(850);
-        //query.near("geopoints", parseGeopoint);
+        query.near("geopoints", parseGeopoint);
         query.find().then(populateBars);
     }
     function getNearestToMapCenter2(addres) {
-        console.log(addres);
+        //console.log(addres);
         if (addres.length == 0) {
             document.getElementById("list-search").innerHTML = "";
             document.getElementById("list-search").style.border = "0px";
-            //getNearestToMapCenter();
             return;
         } else {
             document.getElementById("results-search").innerHTML = "";
@@ -22413,35 +22417,19 @@ function MapPageScreen() {
     }
     function searchNearAddress(address) {
         isReceivingData = true;
-        // geoCoder.geocode({
-        // 	address: address
-        // }, function(results, status) {
-        // 	var locationCoordinates;
-        // 	if (status == google.maps.GeocoderStatus.OK && results.length) {
-        // 		// var addr=results[0].formatted_address;
-        // 		// var add_length=addr.length;
-        // 		// var uk_only=addr.substring(add_length-2,add_length);
-        // 		// if(uk_only=='UK')
-        // 		// {
-        // 		// 	//showRestrictedResults();
-        // 		// }
-        // 		// else
-        // 		// {
-        // 		//Use the first result
-        // 		 locationCoordinates = results[0].geometry.location;
-        // 		// console.log(mapBounds.contains(results[0].geometry.location));
-        // 		 if (mapBounds.contains(locationCoordinates)) {
-        // 		 	mapCenterLocation = locationCoordinates;
         getNearestToMapCenter2(address);
     }
     function getDirectionsFromList(e) {
-        if (e.target.className === "getDirectionsArrow") {
+        if (e.target.className === "bar-name" || e.target.className === "getDirectionsArrow") {
             e.preventDefault();
             activeBar = listedBars[e.target.getAttribute("data-bar")];
             activeBar = activeBar.attributes;
+            //console.log(activeBar);
+            ga("send", "event", "Bar selected", activeBar.name1, activeBar.name1);
             hideBarsList();
-            showBarDetails(activeBar);
-            getDirectionsToBar(null, activeBar);
+            //removeBarPins();
+            //console.log(activeBar);
+            addOneBarMarker(activeBar);
         }
     }
     function resetSearch() {
@@ -22463,9 +22451,7 @@ function MapPageScreen() {
         ga("send", "event", "Find a bar", "Search", userSearch);
         if (userSearch) {
             getNearestToMapCenter2(userSearch);
-        } else {
-            resetSearch();
-        }
+        } else {}
     }
     // function searchFromMap(e) {
     // 	e.preventDefault();
@@ -22489,11 +22475,10 @@ function MapPageScreen() {
         var searchedCtrl = document.getElementById("list-search");
         var searchedText = searchedCtrl.value.trim();
         var results = document.getElementById("results-search");
-        console.log(searchedText);
+        //console.log(searchedText);
         if (searchedText == "") {
             results.style.border = "0px";
             results.innerHTML = "";
-            //getNearestToMapCenter();
             return;
         } else {
             var BarsList = Parse.Object.extend("Bars"), query = new Parse.Query(BarsList);
@@ -22538,7 +22523,7 @@ function MapPageScreen() {
             listWrap.addEventListener("click", getDirectionsFromList);
             initMap();
         }
-        getNearestToMapCenter();
+        getAllNearestToMapCenter();
         return this.container;
     };
 }
@@ -22760,7 +22745,12 @@ function StartScreen() {
         //    return M;
         // });
         // var nAgt = sayswho();
-        // if ((verOffset=nAgt.indexOf("Safari"))!=-1) {
+        //if(location.protocol=="https")
+        // if ((verOffset=nAgt.indexOf("Safari"))!=-1) { 61.039487, 2.730992
+        window.UsersLat = 61.039487;
+        window.UsersLng = 2.730992;
+        window.UsersLatLng = [ window.UsersLat, window.UsersLng ];
+        localStorage.setItem("usersLocation", window.UsersLatLng);
         console.log("Safari");
         isAllow = true;
         showRestrictedResults(isAllow);
@@ -22909,7 +22899,6 @@ function StartScreen() {
                     currentUser = user;
                     loggedIn = true;
                     sessionExpired = false;
-                    welcomeNewUser();
                 },
                 error: function(user, error) {
                     Parse.User.logOut();
@@ -22991,7 +22980,7 @@ function ThankYouScreen() {
             subscribeBtn.addEventListener("click", this.subscribeNewsletter);
         }
         this.events.publish(this.id + "ContainerReady", this);
-        document.getElementById("privacy-policy-link").addEventListener("click", loadPrivacyPolicy);
+        //document.getElementById("privacy-policy-link").addEventListener("click", loadPrivacyPolicy);
         return this.container;
     };
 }
@@ -23060,14 +23049,12 @@ function UserDetailsScreen() {
             currentUser.set("name", fullNameStr);
             currentUser.set("postcode", postcode.value);
             currentUser.set("receiveEmails", newsletterSignup.checked);
-            if (updateCRM) {
-                signUpNewsletter();
-            }
+            if (updateCRM) {}
             currentUser.signUp(null, {
                 success: function(user) {
                     currentUser = user;
-                    welcomeNewUser();
-                    //signUpNewsletter();
+                    //welcomeNewUser();
+                    signUpNewsletter();
                     loadHomePage();
                     ga("send", "event", "Details", "Submit", "submit success");
                 },
@@ -23110,6 +23097,47 @@ function UserDetailsScreen() {
             return false;
         }
         return true;
+    }
+    function signUpNewsletter() {
+        var newsletterRequest, formData = getUserCrmData();
+        function getUserCrmData() {
+            var userData = {
+                email: currentUser.attributes.email,
+                name: currentUser.attributes.name,
+                dobDay: currentUser.attributes.birthday.getDate(),
+                dobMonth: currentUser.attributes.birthday.getMonth() + 1,
+                dobYear: currentUser.attributes.birthday.getFullYear(),
+                postCode: currentUser.attributes.postcode || "",
+                optIn: currentUser.attributes.receiveEmails ? true : false
+            }, keyValuePairs = [], i;
+            for (i in userData) {
+                if (userData.hasOwnProperty(i)) {
+                    keyValuePairs.push(encodeURIComponent(i) + "=" + encodeURIComponent(userData[i]));
+                }
+            }
+            return keyValuePairs.join("&");
+        }
+        function signupResponse(e) {
+            var target = e.target, response;
+            if (target.readyState !== 4) {
+                return;
+            }
+            if (target.status >= 200 && target.status < 400) {
+                response = JSON.parse(target.responseText);
+                if (response.success) {
+                    console.log(response);
+                } else {
+                    console.error(response);
+                }
+            } else {
+                console.error("Error submitting form.", target.responseText);
+            }
+        }
+        newsletterRequest = new XMLHttpRequest();
+        newsletterRequest.onreadystatechange = signupResponse;
+        newsletterRequest.open("POST", "/subscribe-exactTarget", true);
+        newsletterRequest.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+        newsletterRequest.send(formData);
     }
     //Do post container creation processing
     this.processContainer = function() {
@@ -23336,9 +23364,9 @@ function App() {
 }
 
 function welcomeNewUser() {
-    if (window.location.host !== "www.pinacoladaday.co.uk") {
-        return;
-    }
+    //if (window.location.host !== 'www.pinacoladaday.co.uk') {
+    //	return;
+    //}
     var formData = getUserCrmData();
     function getUserCrmData() {
         var userData = {
@@ -23367,6 +23395,11 @@ function welcomeNewUser() {
             console.error("Error submitting form.", target.responseText);
         }
     }
+    var emailTriggerRequest = new XMLHttpRequest();
+    //emailTriggerRequest.onreadystatechange = emailTriggerResponse;
+    emailTriggerRequest.open("POST", "/subscribe-exactTarget", true);
+    emailTriggerRequest.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+    emailTriggerRequest.send(formData);
 }
 
 function signUpNewsletter() {
@@ -23398,7 +23431,9 @@ function signUpNewsletter() {
         }
         if (target.status >= 200 && target.status < 400) {
             response = JSON.parse(target.responseText);
-            if (response.success) {} else {
+            if (response.success) {
+                console.log(response);
+            } else {
                 console.error(response);
             }
         } else {

@@ -1045,16 +1045,17 @@ img {
   font-size: 28px;
   font-style: italic;
   font-weight: 200;
+  cursor: pointer;
 }
 
-/* line 157, ../../../../src/sass/templates/_mapPage.scss */
+/* line 158, ../../../../src/sass/templates/_mapPage.scss */
 .bar-more-info {
   width: 90px;
   margin-top: 30px;
   float: right;
 }
 
-/* line 163, ../../../../src/sass/templates/_mapPage.scss */
+/* line 164, ../../../../src/sass/templates/_mapPage.scss */
 .distance {
   font-size: 13px;
   text-align: right;
@@ -1062,9 +1063,9 @@ img {
   display: none;
 }
 
-/* line 170, ../../../../src/sass/templates/_mapPage.scss */
+/* line 171, ../../../../src/sass/templates/_mapPage.scss */
 .getDirectionsArrow {
-  display: none;
+  display: inline-block;
   float: right;
   width: 16px;
   height: 26px;
@@ -1075,7 +1076,7 @@ img {
   cursor: pointer;
 }
 
-/* line 182, ../../../../src/sass/templates/_mapPage.scss */
+/* line 183, ../../../../src/sass/templates/_mapPage.scss */
 address {
   font-size: 16px;
   font-family: 'geoxe3regular', Helvetica, Arial;
@@ -1087,18 +1088,19 @@ address {
   white-space: pre-line;
 }
 
-/* line 193, ../../../../src/sass/templates/_mapPage.scss */
+/* line 194, ../../../../src/sass/templates/_mapPage.scss */
 .phoneNumber {
   width: 100%;
   clear: both;
 }
 
-/* line 198, ../../../../src/sass/templates/_mapPage.scss */
+/* line 199, ../../../../src/sass/templates/_mapPage.scss */
 .get-directions {
   margin: 0 auto 20px;
+  display: none;
 }
 
-/* line 202, ../../../../src/sass/templates/_mapPage.scss */
+/* line 204, ../../../../src/sass/templates/_mapPage.scss */
 .map-view .bar-name,
 .map-view .distance,
 .map-view address {
@@ -1107,25 +1109,25 @@ address {
   margin: 0;
 }
 
-/* line 210, ../../../../src/sass/templates/_mapPage.scss */
+/* line 212, ../../../../src/sass/templates/_mapPage.scss */
 .map-view address {
   margin-bottom: 5px;
   white-space: pre-line;
 }
 
-/* line 215, ../../../../src/sass/templates/_mapPage.scss */
+/* line 217, ../../../../src/sass/templates/_mapPage.scss */
 .bars-postcode {
   width: 100%;
   clear: both;
 }
 
-/* line 220, ../../../../src/sass/templates/_mapPage.scss */
+/* line 222, ../../../../src/sass/templates/_mapPage.scss */
 .map-view .distance {
   width: 30%;
   line-height: 40px;
 }
 
-/* line 225, ../../../../src/sass/templates/_mapPage.scss */
+/* line 227, ../../../../src/sass/templates/_mapPage.scss */
 .bars-list-view {
   background-image: none;
   background-color: #f3f3f3;
@@ -1136,18 +1138,18 @@ address {
   display: none;
   height: auto;
 }
-/* line 235, ../../../../src/sass/templates/_mapPage.scss */
+/* line 237, ../../../../src/sass/templates/_mapPage.scss */
 .bars-list-view .distance {
   text-align: left;
   width: auto;
 }
 
-/* line 243, ../../../../src/sass/templates/_mapPage.scss */
+/* line 245, ../../../../src/sass/templates/_mapPage.scss */
 .map-wrap > .wrapped {
   padding-top: 110px;
 }
 
-/* line 250, ../../../../src/sass/templates/_mapPage.scss */
+/* line 252, ../../../../src/sass/templates/_mapPage.scss */
 .map-page-screen.standalone-version .hide-on-standalone {
   display: none;
 }

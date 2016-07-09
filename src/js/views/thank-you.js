@@ -47,7 +47,7 @@ function ThankYouScreen() {
 		}
 
 		this.events.publish(this.id + 'ContainerReady', this);
-		document.getElementById("privacy-policy-link").addEventListener("click", loadPrivacyPolicy);
+		//document.getElementById("privacy-policy-link").addEventListener("click", loadPrivacyPolicy);
 		return this.container;
 
 	};

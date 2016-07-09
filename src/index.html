@@ -3,7 +3,7 @@
 	<head>
 		<meta charset="utf-8">
 		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-		
+		 <meta http-equiv="Content-Security-Policy" content="default-src *; script-src 'self' 'unsafe-inline' 'unsafe-eval' https: *; style-src  'self' 'unsafe-inline' *;font-src data: *;img-src data: *;connect-src  'self' 'unsafe-inline' *">
 		<title>Malibu National Pi&ntilde;a Colada Day</title>
 		<meta name="description" content="Register your name and email address, enter your location to find and choose your nearest participating bar, then show the bartender your voucher to claim a free Piña Colada!">
 		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
@@ -48,7 +48,6 @@
 			}
 
 		</script>
-
 <!-- Google Tag Manager -->
 <noscript><iframe src="//www.googletagmanager.com/ns.html?id=GTM-MKNLJR"
 height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
@@ -58,7 +57,6 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 '//www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
 })(window,document,'script','dataLayer','GTM-MKNLJR');</script>
 <!-- End Google Tag Manager -->
-
 	</head>
 	<body>
 		
@@ -101,7 +99,6 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 			var fbIds = {
 				"127.0.0.1":"1755847184695400", // new dev	
 				"192.168.10.100":"1755847184695400", // new dev	
-						
 				"npcd2016.parseapp.com":"1755847184695400", // new dev
 				"www.pinacoladaday.co.uk":"1755847184695400"
 			},
@@ -129,7 +126,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 				var js, fjs = d.getElementsByTagName(s)[0];
 				if (d.getElementById(id)) {return;}
 				js = d.createElement(s); js.id = id;
-				js.src = "https://connect.facebook.net/en_GB/sdk.js";
+				js.src = "//connect.facebook.net/en_GB/sdk.js";
 				fjs.parentNode.insertBefore(js, fjs);
 			}(document, 'script', 'facebook-jssdk'));
 
@@ -579,15 +576,35 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 						<img id="thanks-title" src="assets/img/thanks-header.png" alt="Thanks">
 						<p class="intro-text"><span>{{ userName }}</span>, who do you know that would love a free Malibu Pi&ntilde;a Colada? Let's share the love.</p>
 						<div class="dots-border"></div>
-						<div class="term-text">
-							*18+ years, 1 x free Malibu Pi&ntilde;a Colada upon presentation of mobile e-voucher, closing date 10.07.16. 
-							<a href="https://pernod-promotions.com/malibu/pinacolada/terms/" id="tandcLink" target="_blank" onclick="ga('send', 'event', 'Terms and Conditions', 'Viewed');">Terms &amp; Conditions</a>. <a href="#" title="Privacy Policy" id="privacy-policy-link">Privacy Policy</a>.
+
+						<div id="sharing-block">
+							<a href="https://www.facebook.com/sharer/sharer.php?app_id=575605355914823&u=http%3A%2F%2Fwww.pinacoladaday.co.uk%2F&display=popup" target="_blank" class="btn square facebook" onclick="ga('send', 'event', 'Social', 'Facebook', 'share');">
+								<span class="icon">
+									<svg version="1.1" xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" viewBox="-63.3 306.6 113.6 218.8">
+										<path d="M10.4,525.4v-99.8h33.5l5-38.9H10.4v-24.8c0-11.3,3.1-18.9,19.3-18.9l20.6,0v-34.8c-3.6-0.5-15.8-1.5-30-1.5 c-29.7,0-50,18.1-50,51.4v28.7h-33.6v38.9h33.6v99.8H10.4z"/>
+									</svg>
+								</span>
+							</a>
+							<a href="https://twitter.com/intent/tweet?url=http%3A%2F%2Fwww.pinacoladaday.co.uk" target="_blank" class="btn square twitter" onclick="ga('send', 'event', 'Social', 'Twitter', 'share');">
+								<span class="icon">
+									<svg version="1.1" xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" viewBox="788.7 2036 612.1 497.5">
+										<path d="M1400.8,2095.3c-22.5,10-46.7,16.8-72.1,19.6c26.1-15.7,45.7-40,55.3-69.6c-24.3,14.3-51,25-79.7,30.3 c-22.8-24.3-55.7-39.6-91.8-39.6c-69.2,0-125.7,56.4-125.7,125.7c0,10,1.1,19.3,3.2,28.5c-104.3-5.4-197.1-55.3-258.9-131.4 c-10.7,18.6-17.1,40-17.1,63.2c0,43.5,22.1,82.2,56,104.7c-20.7-0.7-40-6.4-56.7-15.7c0,0.4,0,1.1,0,1.4 c0,60.7,43.2,111.8,100.7,123.2c-10.7,2.9-21.8,4.3-33.2,4.3c-8.2,0-16.1-0.7-23.6-2.1c16.1,50,62.4,86.5,117.5,87.2 c-42.8,33.5-97.2,53.9-156,53.9c-10,0-20-0.7-30-1.8c55.7,35.7,121.8,56.4,192.4,56.4c231.1,0,357.4-191.4,357.4-357.4 c0-5.4,0-10.7-0.4-16.4C1362.6,2142.8,1384,2120.6,1400.8,2095.3L1400.8,2095.3z"/>
+									</svg>
+								</span>
+							</a>
+							<a href="mailto:?subject=Malibu%20National%20Pina%20Colada%20Day&amp;body=Enjoy%20a%20free%20pina%20colada!%20Come%20celebrate%20with%20us%20at%20http%3A%2F%2Fwww.pinacoladaday.co.uk" target="_blank" class="btn square email" onclick="ga('send', 'event', 'Social', 'Email', 'share');">
+								<span class="icon">
+									<svg version="1.1" xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" viewBox="0 181.8 612 428.4">
+										<path d="M48.4,207.1l220.4,174.6c10,7.9,23.8,11.4,37.2,10.8c13.4,0.7,27.1-2.8,37.1-10.8l220.4-174.6 c17.7-13.9,13.7-25.3-8.7-25.3H306H57.2C34.8,181.8,30.8,193.2,48.4,207.1z"/>
+										<path d="M579.5,253.2L338.6,436.1c-9,6.8-20.8,10.1-32.6,9.9c-11.8,0.2-23.6-3.2-32.6-9.9L32.5,253.2 C14.6,239.6,0,246.9,0,269.3v300.1c0,22.4,18.4,40.8,40.8,40.8H306h265.2c22.4,0,40.8-18.4,40.8-40.8V269.3 C612,246.9,597.4,239.6,579.5,253.2z"/>
+									</svg>
+								</span>
+							</a>
 						</div>
 					</div>
 				</div>
-					
-				<footer class="wrapped">
-				{{^userSubscribedNewsletter}}
+				<footer>
+					{{^userSubscribedNewsletter}}
 					<div class="wrapped" id="newsletter-signup-section">
 						<p>If you loved your yummy Malibu Piña Colada sign up now to get the latest news, offers, competition and freebies from Malibu.</p>
 						<button type="button" class="btn" id="subscribe-newsletter-btn">
@@ -599,7 +616,11 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 							</span>
 						</button>
 					</div>
-				{{/userSubscribedNewsletter}}
+					{{/userSubscribedNewsletter}}
+					<div class="orangeLink"><a href="http://www.maliburumdrinks.com/uk/" target="_blank" title="For drinks & competitions">For drinks & competitions</a></div>
+					<p class="wrapped" id="ending-text">
+					Happy national Piña colada day, love malibu x</p>
+					<div class="clearfix"></div>
 				</footer>
 			</div>
 		</script>
