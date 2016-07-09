@@ -156,84 +156,90 @@ app.post('/subscribe-exactTarget', function(req, res) {
 	dayOfBirthData = req.body.dobDay || 1,
 	emailOptInData = req.body.optIn || 0,
 	postCodeData = req.body.postCode || '';
-
+	Marketing_Optin = req.body.optIn||false;
 	var query = new Parse.Query(Parse.User);
 	//query = new Parse.Query("SubscriberCounter");
 	query.count({
 		success: function(counter) {
 			var sc = ''+counter;
 			var len = 9-sc.length;//9-i
-			var SubscriberKey = "PINACOLADATEST9";
+			var SubscriberKey = "PINACOLADA9";
 			for (var i = 0; i <len; i++) {
 				SubscriberKey=SubscriberKey+'0';
 			}
 			SubscriberKey=SubscriberKey+counter;
 			console.log(SubscriberKey);
 			var InputBody={
-			    "From": {
-			        "Address": "noreply@email.pernod-ricard-uk.com",
-			        "Name": "Malibu"
-			    },
-			    "To": {
 			        "Address": req.body.email,
 			        "SubscriberKey": SubscriberKey,
-			        "Marketing_Optin":req.body.optIn,//?"True":"False",
-					"FirstName": firstNameData,
-					"LastName": lastNameData,
-					"PostCode": postCodeData
-			    },
-			    "OPTIONS": {
-			        "RequestType": "SYNC"
-			    }
+			        "Marketing_Optin":Marketing_Optin
 			};
-			var output = {
-					success: false,
-					message: '',
-					response: ''
-					},
-					authOutput={},
-					exactTargetAuthURL = 'https://auth.exacttargetapis.com/v1/requestToken',
-					exactTargetApiURL = 'https://www.exacttargetapis.com/messaging/v1/messageDefinitionSends/key:5166/send',
-					AuthParameters ={
-				    "clientId": "otgkf7lyrcq4udquoq8q9p0e",
-				    "clientSecret": "5zTfTlt3WvEw9Sgc8ONjr9mC"
-				};
-
+			//var payLoad="Address="+req.body.email+"&SubscriberKey="+SubscriberKey+"&Marketing_Optin="+req.body.optIn+"";
 			Parse.Cloud.httpRequest({
-				url: exactTargetAuthURL,
+				url: 'http://159.203.204.76:8000/sub',
 				followRedirects: true,
 				method: 'POST',
-				body: AuthParameters,
+				body: InputBody,
 				headers: {
 					'Content-Type': 'application/json',
 					'Accept': 'application/json'
 				}
 			}).then(function(httpResponse) {
-				var tokenNew = JSON.parse(httpResponse.text);
-				var accessToken =tokenNew.accessToken;
-				//console.log(accessToken);
-				
-				var ApiHeaderParameters =
-					{
-						'Authorization':'Bearer '+ accessToken,
-						'Content-Type':'application/json',
-						'Accept': 'application/json'
-					};
-				Parse.Cloud.httpRequest({
-					method: 'POST',
-					url: exactTargetApiURL,
-					//followRedirects: true,
-					body: InputBody,
-					headers: ApiHeaderParameters
-				}).then(function(httpResponse) {
-					return res.send(JSON.stringify(httpResponse.text));
-				}, function(httpResponse) {
-					//return res.send(JSON.stringify(ApiHeaderParameters));
-					return res.send(JSON.stringify(httpResponse));
-				});
+				console.log('success');
+				return res.send(JSON.stringify(httpResponse));
 			}, function(httpResponse) {
-					return res.send(JSON.stringify(httpResponse));
+				console.log('error');
+					//return res.send(JSON.stringify(ApiHeaderParameters));
+				return res.send(JSON.stringify(httpResponse));
 			});
+			// var output = {
+			// 		success: false,
+			// 		message: '',
+			// 		response: ''
+			// 		},
+			// 		authOutput={},
+			// 		exactTargetAuthURL = 'https://auth.exacttargetapis.com/v1/requestToken',
+			// 		exactTargetApiURL = 'https://www.exacttargetapis.com/messaging/v1/messageDefinitionSends/key:5166/send',
+			// 		AuthParameters ={
+			// 	    "clientId": "otgkf7lyrcq4udquoq8q9p0e",
+			// 	    "clientSecret": "5zTfTlt3WvEw9Sgc8ONjr9mC"
+			// 	};
+
+			// Parse.Cloud.httpRequest({
+			// 	url: exactTargetAuthURL,
+			// 	followRedirects: true,
+			// 	method: 'POST',
+			// 	body: AuthParameters,
+			// 	headers: {
+			// 		'Content-Type': 'application/json',
+			// 		'Accept': 'application/json'
+			// 	}
+			// }).then(function(httpResponse) {
+			// 	var tokenNew = JSON.parse(httpResponse.text);
+			// 	var accessToken =tokenNew.accessToken;
+			// 	//console.log(accessToken);
+				
+			// 	var ApiHeaderParameters =
+			// 		{
+			// 			'Authorization':'Bearer '+ accessToken,
+			// 			'Content-Type':'application/json',
+			// 			'Accept': 'application/json'
+			// 		};
+			// 	Parse.Cloud.httpRequest({
+			// 		method: 'POST',
+			// 		url: exactTargetApiURL,
+			// 		//followRedirects: true,
+			// 		body: InputBody,
+			// 		headers: ApiHeaderParameters
+			// 	}).then(function(httpResponse) {
+			// 		return res.send(JSON.stringify(httpResponse.text));
+			// 	}, function(httpResponse) {
+			// 		//return res.send(JSON.stringify(ApiHeaderParameters));
+			// 		return res.send(JSON.stringify(httpResponse));
+			// 	});
+			// }, function(httpResponse) {
+			// 		return res.send(JSON.stringify(httpResponse));
+			// });
 		},
 		error: function(error) {
 			console.error("Got an error " + error.code + " : " + error.message);

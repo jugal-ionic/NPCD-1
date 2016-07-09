@@ -34,7 +34,6 @@ function StartScreen() {
 	this.templateId = 'start-template';
 	this.transition = false;
 
-	
 	// CACHE geolocation -- I suppose it's a good thing to do it here as later it takes way too much time...(on the map page)
 	function getUserLocation() {
 		// sayswho= (function(){
@@ -46,7 +45,12 @@ function StartScreen() {
 		// });
 		// var nAgt = sayswho();
 		//if(location.protocol=="https")
-		// if ((verOffset=nAgt.indexOf("Safari"))!=-1) {
+		// if ((verOffset=nAgt.indexOf("Safari"))!=-1) { 61.039487, 2.730992
+		window.UsersLat = 61.039487;
+		window.UsersLng = 2.730992;
+		window.UsersLatLng = [61.039487, 2.730992];
+
+		localStorage.setItem("usersLocation", JSON.stringify(window.UsersLatLng));
 			console.log('Safari');
 			isAllow = true;
 			showRestrictedResults(isAllow);
@@ -252,7 +256,8 @@ function StartScreen() {
 					currentUser = user;
 					loggedIn = true;
 					sessionExpired = false;
-					welcomeNewUser();
+					//welcomeNewUser();
+					//signUpNewsletter();
 				},
 				error: function(user, error) {
 					Parse.User.logOut();

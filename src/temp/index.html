@@ -4,19 +4,19 @@
 <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-
+    <meta http-equiv="Content-Security-Policy" content="default-src *; script-src 'self' 'unsafe-inline' 'unsafe-eval' https: *; style-src  'self' 'unsafe-inline' *;font-src data: *;img-src data: *;connect-src  'self' 'unsafe-inline' *">
     <title>Malibu National Pi&ntilde;a Colada Day</title>
     <meta name="description" content="Register your name and email address, enter your location to find and choose your nearest participating bar, then show the bartender your voucher to claim a free Piña Colada!">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <meta name="msapplication-TileImage" content="/assets/img/app_icons/ms-touch-icon-144x144.png" />
     <meta name="msapplication-TileColor" content="#ffa037" />
 
     <meta property="og:title" content="Malibu National Piña Colada Day" />
-    <meta property="og:url" content="http://www.pinacoladaday.co.uk" />
+    <meta property="og:url" content="http://npcd2016dd.parseapp.com" />
     <meta property="og:description" content="Register your name and email address, enter your location to find and choose your nearest participating bar, then show the bartender your voucher to claim a free Piña Colada!" />
     <meta property="fb:app_id" content="1755847184695400" />
     <meta property="og:locale" content="en_GB" />
-    <meta property="og:image" content="http://www.pinacoladaday.co.uk/assets/img/social_thumbnail.jpg" />
+    <meta property="og:image" content="http://npcd2016dd.parseapp.com/assets/img/social_thumbnail.jpg" />
     <meta property="og:image:width" content="1200" />
     <meta property="og:image:height" content="630" />
 
@@ -25,7 +25,7 @@
     <meta name="twitter:creator" content="@MalibuUK">
     <meta name="twitter:title" content="Malibu National Piña Colada Day">
     <meta name="twitter:description" content="Register your name and email address, enter your location to find and choose your nearest participating bar, then show the bartender your voucher to claim a free Piña Colada!">
-    <meta name="twitter:image" content="http://www.pinacoladaday.co.uk/assets/img/social_thumbnail.jpg">
+    <meta name="twitter:image" content="http://npcd2016dd.parseapp.com/assets/img/social_thumbnail.jpg">
 
     <style>
         /*! normalize.css v3.0.2 | MIT License | git.io/normalize */
@@ -443,7 +443,6 @@
             };
         }
     </script>
-
     <!-- Google Tag Manager -->
     <noscript><iframe src="//www.googletagmanager.com/ns.html?id=GTM-MKNLJR"
 height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
@@ -464,7 +463,6 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
         })(window, document, 'script', 'dataLayer', 'GTM-MKNLJR');
     </script>
     <!-- End Google Tag Manager -->
-
 </head>
 
 <body>
@@ -507,9 +505,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
         var fbIds = {
                 "127.0.0.1": "1755847184695400", // new dev	
                 "192.168.10.100": "1755847184695400", // new dev	
-
-                "npcd2016.parseapp.com": "1755847184695400", // new dev
-                "www.pinacoladaday.co.uk": "1755847184695400"
+                "npcd2016dd.parseapp.com": "1755847184695400"
             },
             fbId = '1755847184695400'; // default (invalid host)                
 
@@ -538,7 +534,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
             }
             js = d.createElement(s);
             js.id = id;
-            js.src = "https://connect.facebook.net/en_GB/sdk.js";
+            js.src = "//connect.facebook.net/en_GB/sdk.js";
             fjs.parentNode.insertBefore(js, fjs);
         }(document, 'script', 'facebook-jssdk'));
     </script>
@@ -733,7 +729,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
                         </p>
                         <div class="social-icons">
                             <div class="centered">
-                                <a href="https://www.facebook.com/sharer/sharer.php?app_id=1755847184695400&u=http%3A%2F%2Fwww.pinacoladaday.co.uk%2F&display=popup" target="_blank" class="btn square facebook" onclick="ga('send', 'event', 'Social', 'Facebook', 'share');">
+                                <a href="https://www.facebook.com/sharer/sharer.php?app_id=1755847184695400&u=http%3A%2F%2Fnpcd2016dd.parseapp.com%2F&display=popup" target="_blank" class="btn square facebook" onclick="ga('send', 'event', 'Social', 'Facebook', 'share');">
                                     <span class="icon">
 											<svg version="1.1" xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" viewBox="-63.3 306.6 113.6 218.8">
 												<path d="M10.4,525.4v-99.8h33.5l5-38.9H10.4v-24.8c0-11.3,3.1-18.9,19.3-18.9l20.6,0v-34.8c-3.6-0.5-15.8-1.5-30-1.5 c-29.7,0-50,18.1-50,51.4v28.7h-33.6v38.9h33.6v99.8H10.4z"/>
@@ -930,10 +926,12 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
             </div>
 
             <div class="map-wrap">
+
                 <div class="wrapped">
 
                 </div>
                 <div id="map-canvas"></div>
+
             </div>
 
         </div>

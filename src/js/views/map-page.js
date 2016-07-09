@@ -19,7 +19,7 @@ function MapPageScreen() {
 		minZoomLevel = 6,
 		mapBounds = new google.maps.LatLngBounds(
 			new google.maps.LatLng(49.378087, -8.906589),
-			new google.maps.LatLng(61.039487, 2.730992)
+			new google.maps.LatLng(56.039487, 2.730992)
 		),
 		barBounds,
 		userLocation,
@@ -43,7 +43,7 @@ function MapPageScreen() {
 	barListItemTemplate += '</div>';
 	barListItemTemplate += '{{/directionsEnabled}}';
 	barListItemTemplate += '<address>{{ address }}</address>';
-	barListItemTemplate += '<p class="phoneNumber" ><a href="tel:{{ phoneClean }}" title="Call the bar!">{{ phone }}</a></p>';
+	barListItemTemplate += '<p class="phoneNumber" >{{ phoneLabel }} <a href="tel:{{ phoneClean }}" title="Call the bar!">{{ phone }}</a></p>';
 	barListItemTemplate += '<div class="clearfix"></div>';
 	barListItemTemplate += '<div class="dots-border"></div>';
 
@@ -54,13 +54,13 @@ function MapPageScreen() {
 	this.templateId = 'map-page-template';
 	this.root = false;
 
-	if (localStorage && localStorage.getItem("usersLocation")) {
+	// if (localStorage && localStorage.getItem("usersLocation")) {
 
-		var userCoordinates = JSON.parse(localStorage.getItem("usersLocation"));
+	// 	var userCoordinates = JSON.parse(localStorage.getItem("usersLocation"));
 
-		userLocation = new google.maps.LatLng(userCoordinates[0], userCoordinates[1]);
+	// 	userLocation = new google.maps.LatLng(userCoordinates[0], userCoordinates[1]);
 
-	}
+	// }
 
 	// Close that same popup...
 	function hideBarDetails(e){
@@ -245,7 +245,7 @@ function MapPageScreen() {
 		distance.textContent ='goto';// distanceToBar ? distanceToBar : '';
 
 		if (barData.phone) {
-			phoneNumField.innerHTML = 'Tel.'+barData.phone;
+			phoneNumField.innerHTML = barData.phone;
 			phoneNumField.href = 'tel:' + barData.phone.replace(/ /g,'');
 			phoneNumField.parentNode.style.display = 'block';
 		} else {
@@ -277,7 +277,27 @@ function MapPageScreen() {
 		barBounds.extend(barCoordinates);
 
 	}
-	function addOneBarMarker(barData) {
+	function addBarMarkerNonSelected(barData) {
+
+
+		var barCoordinates = new google.maps.LatLng(barData.latitude, barData.longitude),
+			barMarker = new google.maps.Marker({
+				position: barCoordinates,
+				map: map,
+				icon: 'assets/img/pin.png',
+				title: barData.name1 + (barData.name2 ? ' ' + barData.name2 : '')
+			});
+
+		barMarker.set('barData', barData);
+
+		google.maps.event.addListener(barMarker, 'click', showBarDetails);
+
+		mapMarkers.push(barMarker);
+
+		barBounds.extend(barCoordinates);
+
+	}
+	function addBarMarkerSelected(barData) {
 
 		var barCoordinates = new google.maps.LatLng(barData.latitude, barData.longitude),
 			barMarker = new google.maps.Marker({
@@ -294,8 +314,33 @@ function MapPageScreen() {
 		mapMarkers.push(barMarker);
 
 		barBounds.extend(barCoordinates);
+
+	}
+	function addOneBarMarker(barData) {
+		
+		//var tmp=mapMarkers;
+		//removeBarPins();
+		_.each(mapMarkers,function(item){
+
+			if(item.barData.num_id == barData.num_id)
+			{
+				item.setMap(null);
+				addBarMarkerSelected(item.barData);
+			}
+			else
+			{
+				if(item.barData.latitude!==undefined)
+				{					
+					item.setMap(null);
+					addBarMarkerNonSelected(item.barData);
+				}
+			}
+		});
+
+		var barCoordinates = new google.maps.LatLng(barData.latitude, barData.longitude);
+		barBounds.extend(barCoordinates);
 		map.setCenter(barCoordinates);
-  		map.setZoom(15);
+    	map.setZoom(14);
 	}
 	function renderBarListItem(barData, index) {
 		
@@ -322,6 +367,7 @@ function MapPageScreen() {
 			distance: distanceToBar,
 			address: barData.address1 + (barData.address2 ? "\n" + barData.address2 : '') + (barData.address3 ? "\n" + barData.address3 : '') + (barData.address4 ? "\n" + barData.address4 : '') + (barData.postcode ? "\n" + barData.postcode : ''),
 			phone: barData.phone,
+			phoneLabel: barData.phone ? 'Tel.' :'',
 			phoneClean: (barData.phone ? barData.phone.replace(/ /g,'') : false),
 			directionsEnabled: (!distanceToBar || self.screenData.standalone) ? false : true,
 			index: index
@@ -342,7 +388,7 @@ function MapPageScreen() {
 	}
 
 	function populateBars(barData) {
-		console.log(barData.length);
+		//console.log(barData.length);
 		if(barData.length>0)
 			{
 				var i,
@@ -411,7 +457,7 @@ function MapPageScreen() {
 
 	}
 	function getNearestToMapCenter2(addres) {
-		console.log(addres);
+		//console.log(addres);
 		if (addres.length==0) { 
 		    document.getElementById('list-search').innerHTML="";
 		    document.getElementById('list-search').style.border="0px";
@@ -435,9 +481,9 @@ function MapPageScreen() {
 		var defaultZoom = 10;
 
 		mapCenterLocation = userLocation || mapBounds.getCenter();
-
+		console.log(mapCenterLocation);
 		map = new google.maps.Map(document.getElementById('map-canvas'), {
-			center: mapCenterLocation,
+			center: userLocation,
 			zoom: defaultZoom,
 			disableDefaultUI: true,
 		});
@@ -542,10 +588,11 @@ function MapPageScreen() {
 
 			activeBar = listedBars[e.target.getAttribute('data-bar')];
 			activeBar = activeBar.attributes;
-
+			//console.log(activeBar);
+			ga('send', 'event', 'Bar selected', activeBar.name1, activeBar.name1);
 			hideBarsList();
 			//removeBarPins();
-			console.log(activeBar);
+			//console.log(activeBar);
 			addOneBarMarker(activeBar);
 			//showBarDetails(activeBar);
 
@@ -587,7 +634,7 @@ function MapPageScreen() {
 		if (userSearch) {
 			getNearestToMapCenter2(userSearch);
 		} else {
-			resetSearch();
+			//resetSearch();
 		}
 
 	}
@@ -624,7 +671,7 @@ function MapPageScreen() {
         var searchedCtrl = document.getElementById('list-search');
         var searchedText=searchedCtrl.value.trim();
         var results = document.getElementById('results-search');
-        console.log(searchedText);
+        //console.log(searchedText);
      	if (searchedText=='') { 
 		    results.style.border="0px";
 		    results.innerHTML='';

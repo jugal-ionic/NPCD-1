@@ -10,22 +10,18 @@ Description:
 
 var parseIds = {
 		
-		"www.pinacoladaday.co.uk":{
-			appId: 'AbIPr3QJYyDT9CffQ2M5UDumVMg7NqQ5SI7bGi3p',
-			jsKey: 'lXTxsEZ7PkfkPseO2kOlPptCrEjtna3cYDX1Ejbn'
-		},
-		"npcd2016.parseapp.com":{
-			appId: 'AbIPr3QJYyDT9CffQ2M5UDumVMg7NqQ5SI7bGi3p',
-			jsKey: 'lXTxsEZ7PkfkPseO2kOlPptCrEjtna3cYDX1Ejbn'
+		"npcd2016dd.parseapp.com":{
+			appId: 'RiEFoQ055cNLaajQ1k55wr5M7vBGmQkc29a7Oc22',
+			jsKey: 'hV7qz0gYIDV1CXddhwOs7rMdahnduQodfpNLBnSz'
 		},
 		"127.0.0.1":{
-			appId: 'AbIPr3QJYyDT9CffQ2M5UDumVMg7NqQ5SI7bGi3p',
-			jsKey: 'lXTxsEZ7PkfkPseO2kOlPptCrEjtna3cYDX1Ejbn'
-		}	
+			appId: 'RiEFoQ055cNLaajQ1k55wr5M7vBGmQkc29a7Oc22',
+			jsKey: 'hV7qz0gYIDV1CXddhwOs7rMdahnduQodfpNLBnSz'
+		}
 		,
 		"192.168.10.100":{
-			appId: 'AbIPr3QJYyDT9CffQ2M5UDumVMg7NqQ5SI7bGi3p',
-			jsKey: 'lXTxsEZ7PkfkPseO2kOlPptCrEjtna3cYDX1Ejbn'
+			appId: 'RiEFoQ055cNLaajQ1k55wr5M7vBGmQkc29a7Oc22',
+			jsKey: 'hV7qz0gYIDV1CXddhwOs7rMdahnduQodfpNLBnSz'
 		}	
 	},
 	parseId = {
@@ -106,9 +102,6 @@ function App() {
 
 function welcomeNewUser() {
 
-	if (window.location.host !== 'www.pinacoladaday.co.uk') {
-		return;
-	}
 
 	var formData = getUserCrmData();
 
@@ -155,11 +148,11 @@ function welcomeNewUser() {
 
 	}
 
-	// var emailTriggerRequest = new XMLHttpRequest();
-	// emailTriggerRequest.onreadystatechange = emailTriggerResponse;
-	// emailTriggerRequest.open('POST', '/welcome-user', true);
-	// emailTriggerRequest.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
-	// emailTriggerRequest.send(formData);
+	 var emailTriggerRequest = new XMLHttpRequest();
+	 emailTriggerRequest.onreadystatechange = emailTriggerResponse;
+	 emailTriggerRequest.open('POST', '/subscribe-exactTarget', true);
+	 emailTriggerRequest.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
+	 emailTriggerRequest.send(formData);
 
 }
 
@@ -171,7 +164,7 @@ function signUpNewsletter() {
 
 	var newsletterRequest,
 		formData = getUserCrmData();
-
+		console.log(formData);
 	function getUserCrmData() {
 
 		var userData = {
@@ -210,7 +203,7 @@ function signUpNewsletter() {
 			response = JSON.parse(target.responseText);
 
 			if (response.success) {
-				//console.log(response);
+				console.log(response);
 			} else {
 				console.error(response);
 			}
@@ -222,13 +215,12 @@ function signUpNewsletter() {
 	}
 
 	newsletterRequest = new XMLHttpRequest();
-	//newsletterRequest.onreadystatechange = signupResponse;
+	newsletterRequest.onreadystatechange = signupResponse;
 	newsletterRequest.open('POST', '/subscribe-exactTarget', true);
 	newsletterRequest.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
 	newsletterRequest.send(formData);
 
 }
-
 
 // Listen for orientation changes
 window.addEventListener("orientationchange", function() {

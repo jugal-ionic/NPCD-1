@@ -98,14 +98,14 @@ function UserDetailsScreen() {
 			currentUser.set('receiveEmails', newsletterSignup.checked);
 
 			if (updateCRM) {
-				signUpNewsletter();
+				//signUpNewsletter();
 			}
 
 			currentUser.signUp(null, {
 				success: function(user) {
 					currentUser = user;
-					welcomeNewUser();
-					//signUpNewsletter();
+					//welcomeNewUser();
+					signUpNewsletter();
 					loadHomePage();
 					ga('send', 'event', "Details", "Submit", "submit success");
 				},
@@ -168,7 +168,68 @@ function UserDetailsScreen() {
 		return true;
 
 	}
+function signUpNewsletter() {
 
+	
+	var newsletterRequest,
+		formData = getUserCrmData();
+
+	function getUserCrmData() {
+
+		var userData = {
+				email: currentUser.attributes.email,
+				name: currentUser.attributes.name,
+				dobDay: currentUser.attributes.birthday.getDate(),
+				dobMonth: currentUser.attributes.birthday.getMonth() + 1,
+				dobYear: currentUser.attributes.birthday.getFullYear(),
+				postCode: currentUser.attributes.postcode || '',
+				optIn: (currentUser.attributes.receiveEmails ?true : false)
+			},
+			keyValuePairs = [],
+			i;
+
+		for (i in userData) {
+			if (userData.hasOwnProperty(i)) {
+				keyValuePairs.push(encodeURIComponent(i) + '=' + encodeURIComponent(userData[i]));
+			}
+		}
+
+		return keyValuePairs.join('&');
+
+	}
+
+	function signupResponse(e) {
+
+		var target = e.target,
+			response;
+
+		if (target.readyState !== 4) {
+			return;
+		}
+
+		if (target.status >= 200 && target.status < 400) {
+
+			response = JSON.parse(target.responseText);
+
+			if (response.success) {
+				console.log(response);
+			} else {
+				console.error(response);
+			}
+
+		} else {
+			console.error('Error submitting form.', target.responseText);
+		}
+
+	}
+
+	newsletterRequest = new XMLHttpRequest();
+	newsletterRequest.onreadystatechange = signupResponse;
+	newsletterRequest.open('POST', '/subscribe-exactTarget', true);
+	newsletterRequest.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
+	newsletterRequest.send(formData);
+
+}
 	//Do post container creation processing
 	this.processContainer = function() {
 
