@@ -35,7 +35,7 @@ function MapPageScreen() {
 		isReceivingData = false,
 		userSearch = '';
 
-	barListItemTemplate += '<h2 class="bar-name">{{ name }}</h2>';
+	barListItemTemplate += '<h2 class="bar-name" data-bar="{{ index }}">{{ name }}</h2>';
 	barListItemTemplate += '{{#directionsEnabled}}';
 	barListItemTemplate += '<div class="bar-more-info">';
 	barListItemTemplate += '<span class="distance">{{ distance }}</span>';
@@ -43,7 +43,7 @@ function MapPageScreen() {
 	barListItemTemplate += '</div>';
 	barListItemTemplate += '{{/directionsEnabled}}';
 	barListItemTemplate += '<address>{{ address }}</address>';
-	barListItemTemplate += '<p class="phoneNumber">Tel. <a href="tel:{{ phoneClean }}" title="Call the bar!">{{ phone }}</a></p>';
+	barListItemTemplate += '<p class="phoneNumber" ><a href="tel:{{ phoneClean }}" title="Call the bar!">{{ phone }}</a></p>';
 	barListItemTemplate += '<div class="clearfix"></div>';
 	barListItemTemplate += '<div class="dots-border"></div>';
 
@@ -206,17 +206,6 @@ function MapPageScreen() {
 		});
 
 	}
-	function triggerBar(e,barData) {
-
-		e.preventDefault();
-
-		if (isReceivingData) {
-			return;
-		}
-
-		isReceivingData = true;
-		addBarMarker2(barData);
-	}
 	function showBarDetails(barData) {
 
 		if (!barData) {
@@ -251,13 +240,12 @@ function MapPageScreen() {
 
 		barInfoOverlay.style.display = 'block';
 		nameField.textContent = barData.name1 + (barData.name2 ? ' ' + barData.name2 : '');
-		//nameField.addEventListener("click", TriggerBar(barData));
 		addressField.textContent = barData.address1 + (barData.address2 ? "\n" + barData.address2 : '') + (barData.address3 ? "\n" + barData.address3 : '') + (barData.address4 ? "\n" + barData.address4 : '');
 		barPostcode.textContent = barData.postcode;
-		distance.textContent ='';// distanceToBar ? distanceToBar : '';
+		distance.textContent ='goto';// distanceToBar ? distanceToBar : '';
 
 		if (barData.phone) {
-			phoneNumField.innerHTML = barData.phone;
+			phoneNumField.innerHTML = 'Tel.'+barData.phone;
 			phoneNumField.href = 'tel:' + barData.phone.replace(/ /g,'');
 			phoneNumField.parentNode.style.display = 'block';
 		} else {
@@ -289,28 +277,26 @@ function MapPageScreen() {
 		barBounds.extend(barCoordinates);
 
 	}
-function addBarMarker2(barData) {
-
-		barData = barData.attributes;
+	function addOneBarMarker(barData) {
 
 		var barCoordinates = new google.maps.LatLng(barData.latitude, barData.longitude),
 			barMarker = new google.maps.Marker({
 				position: barCoordinates,
 				map: map,
-				icon: 'assets/img/pin.png',
+				icon: 'assets/img/pin-user.png',
 				title: barData.name1 + (barData.name2 ? ' ' + barData.name2 : '')
 			});
 
 		barMarker.set('barData', barData);
 
-		//google.maps.event.addListener(barMarker, 'click', showBarDetails);
+		google.maps.event.addListener(barMarker, 'click', showBarDetails);
 
 		mapMarkers.push(barMarker);
 
 		barBounds.extend(barCoordinates);
-
+		map.setCenter(barCoordinates);
+  		map.setZoom(15);
 	}
-
 	function renderBarListItem(barData, index) {
 		
 		barData = barData.attributes;
@@ -344,39 +330,7 @@ function addBarMarker2(barData) {
 		return Mustache.render(barListItemTemplate, barItemData);
 
 	}
-	function renderBarListItem2(barData, index) {
-		
-		barData = barData.attributes;
-		
-		var template,
-			barItemData,
-			distanceOrigin = userLocation || mapCenterLocation || false,
-			distanceToBar;
 
-		if (distanceOrigin) {
-
-			distanceToBar = google.maps.geometry.spherical.computeDistanceBetween(
-				new google.maps.LatLng(barData.latitude, barData.longitude),
-				distanceOrigin
-			);
-
-			distanceToBar = (distanceToBar * 0.000621371192).toFixed(2) + ' miles';
-
-		};
-
-		barItemData = {
-			name: barData.name1 + (barData.name2 ? ' ' + barData.name2 : ''),
-			distance: distanceToBar,
-			address: barData.address1 + (barData.address2 ? "\n" + barData.address2 : '') + (barData.address3 ? "\n" + barData.address3 : '') + (barData.address4 ? "\n" + barData.address4 : '') + (barData.postcode ? "\n" + barData.postcode : ''),
-			phone: barData.phone,
-			phoneClean: (barData.phone ? barData.phone.replace(/ /g,'') : false),
-			directionsEnabled: (!distanceToBar || self.screenData.standalone) ? false : true,
-			index: index
-		}
-
-		return Mustache.render(barListItemTemplate, barItemData);
-
-	}
 	function removeBarPins() {
 
 		var i;
@@ -428,7 +382,7 @@ function addBarMarker2(barData) {
 			}
 	}
 
-	function getNearestToMapCenter() {
+	function getAllNearestToMapCenter() {
 
 		if (!mapCenterLocation) {
 			return;
@@ -443,8 +397,8 @@ function addBarMarker2(barData) {
 		isReceivingData = true;
 
 		var BarsList = Parse.Object.extend("Bars"),
-			query = new Parse.Query(BarsList);
-			//,parseGeopoint = new Parse.GeoPoint(51.50618, -0.12978);//london
+			query = new Parse.Query(BarsList)
+			,parseGeopoint = new Parse.GeoPoint(51.50618, -0.12978);//london
 
 		// if (!self.screenData.standalone) {
 		// 	query.limit(25);
@@ -452,7 +406,7 @@ function addBarMarker2(barData) {
 		// 	query.limit(1000);
 		// }
 		query.limit(850);
-		//query.near("geopoints", parseGeopoint);
+		query.near("geopoints", parseGeopoint);
 		query.find().then(populateBars);
 
 	}
@@ -461,7 +415,6 @@ function addBarMarker2(barData) {
 		if (addres.length==0) { 
 		    document.getElementById('list-search').innerHTML="";
 		    document.getElementById('list-search').style.border="0px";
-		    //getNearestToMapCenter();
 		    return;
 		  }
 		  else
@@ -542,8 +495,8 @@ function addBarMarker2(barData) {
 
 	}
 	function searchNearAddress(address) {
-		isReceivingData = true;
-
+	isReceivingData = true;
+	getNearestToMapCenter2(address);
 		// geoCoder.geocode({
 		// 	address: address
 		// }, function(results, status) {
@@ -566,7 +519,7 @@ function addBarMarker2(barData) {
 		// 		// console.log(mapBounds.contains(results[0].geometry.location));
 		// 		 if (mapBounds.contains(locationCoordinates)) {
 		// 		 	mapCenterLocation = locationCoordinates;
-				 	getNearestToMapCenter2(address);
+				 	
 			// 	 } 
 			// 	 else {
 			// 	 	showNoResults();
@@ -578,13 +531,12 @@ function addBarMarker2(barData) {
 			// 	showErrors();
 			// }
 		
-	//	});
-
+		//	});
 	}
 
 	function getDirectionsFromList(e) {
 
-		if (e.target.className === 'getDirectionsArrow') {
+		if (e.target.className === 'bar-name' || e.target.className ==='getDirectionsArrow') {
 
 			e.preventDefault();
 
@@ -592,9 +544,12 @@ function addBarMarker2(barData) {
 			activeBar = activeBar.attributes;
 
 			hideBarsList();
-			showBarDetails(activeBar);
+			//removeBarPins();
+			console.log(activeBar);
+			addOneBarMarker(activeBar);
+			//showBarDetails(activeBar);
 
-			getDirectionsToBar(null, activeBar);
+			//getDirectionsToBar(null, activeBar);
 
 		}
 
@@ -637,32 +592,32 @@ function addBarMarker2(barData) {
 
 	}
 
-	// function searchFromMap(e) {
+		// function searchFromMap(e) {
 
-	// 	e.preventDefault();
+		// 	e.preventDefault();
 
-	// 	if (isReceivingData) {
-	// 		return;
-	// 	}
+		// 	if (isReceivingData) {
+		// 		return;
+		// 	}
 
-	// 	isReceivingData = true;
+		// 	isReceivingData = true;
 
-	// 	var listSearchField = document.getElementById('list-search'),
-	// 		mapSearchField = document.getElementById('map-search');
+		// 	var listSearchField = document.getElementById('list-search'),
+		// 		mapSearchField = document.getElementById('map-search');
 
-	// 	listSearchField.value = mapSearchField.value.trim();
+		// 	listSearchField.value = mapSearchField.value.trim();
 
-	// 	userSearch = listSearchField.value;
+		// 	userSearch = listSearchField.value;
 
-	// 	ga('send', 'event', 'Find a bar', 'Search', listSearchField.value);
+		// 	ga('send', 'event', 'Find a bar', 'Search', listSearchField.value);
 
-	// 	if (listSearchField.value) {
-	// 		getNearestToMapCenter2(mapSearchField.value);
-	// 	} else {
-	// 		resetSearch();
-	// 	}
+		// 	if (listSearchField.value) {
+		// 		getNearestToMapCenter2(mapSearchField.value);
+		// 	} else {
+		// 		resetSearch();
+		// 	}
 
-	// }
+		// }
 	function LoadCityBox(e)
 	{
 		e.preventDefault();
@@ -673,7 +628,6 @@ function addBarMarker2(barData) {
      	if (searchedText=='') { 
 		    results.style.border="0px";
 		    results.innerHTML='';
-		    //getNearestToMapCenter();
 		    return;
 		}
 		else
@@ -742,7 +696,7 @@ function addBarMarker2(barData) {
 
 		}
 
-		getNearestToMapCenter();
+		getAllNearestToMapCenter();
 
 		return this.container;
 

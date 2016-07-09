@@ -45,7 +45,7 @@ function StartScreen() {
 	 //    return M;
 		// });
 		// var nAgt = sayswho();
-		
+		//if(location.protocol=="https")
 		// if ((verOffset=nAgt.indexOf("Safari"))!=-1) {
 			console.log('Safari');
 			isAllow = true;

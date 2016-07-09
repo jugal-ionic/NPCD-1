@@ -152,6 +152,7 @@
 	font-size: 28px;
 	font-style: italic;
 	font-weight: 200;
+	cursor: pointer;
 }
 
 .bar-more-info {
@@ -168,7 +169,7 @@
 }
 
 .getDirectionsArrow {
-	display: none;
+	display: inline-block;
 	float: right;
 	width: 16px;
 	height: 26px;
